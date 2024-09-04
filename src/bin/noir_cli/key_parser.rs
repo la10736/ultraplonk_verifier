@@ -19,7 +19,9 @@ use ultraplonk_verifier::{CommitmentField, VerificationKey};
 
 use crate::cli::Commands;
 use crate::errors::CliError;
-use crate::utils::{encode_str, encode_u32, encode_value_as_u256, encode_value_as_u32, out_file};
+use crate::utils::{
+    self, encode_str, encode_u32, encode_value_as_u256, encode_value_as_u32, out_file,
+};
 
 pub fn process_verification_key(command: &Commands, verbose: bool) -> Result<(), CliError> {
     if let Commands::Key { input, output } = command {
@@ -140,4 +142,19 @@ fn parse_solidity_file(vk_file: &str) -> Result<VerificationKey, CliError> {
 
     VerificationKey::try_from(&buf[..])
         .map_err(|e| CliError::CliError(format!("Failed to parse verification key: {:?}", e)))
+}
+
+pub fn dump_key_hex(input_vk: &PathBuf, output_vk: &Option<PathBuf>) -> Result<(), CliError> {
+    let vk = std::fs::read(input_vk).map_err(|e| {
+        CliError::CliError(format!(
+            "Failed to read file: {:?}. Reason :{:?}",
+            input_vk, e
+        ))
+    })?;
+
+    let mut w = out_file(output_vk.as_ref())?;
+    utils::dump_data_hex(&mut w, &vk)
+        .map_err(|_| CliError::CliError("Failed to write output file".to_string()))?;
+
+    Ok(())
 }
