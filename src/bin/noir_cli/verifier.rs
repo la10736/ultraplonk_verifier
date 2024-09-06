@@ -72,7 +72,7 @@ fn verify(key: &PathBuf, proof: &PathBuf, pubs: &PathBuf, verbose: bool) -> Resu
     }
 }
 
-fn convert_to_pub_inputs(data: &[u8]) -> Result<&[PublicInput], CliError> {
+pub(crate) fn convert_to_pub_inputs(data: &[u8]) -> Result<&[PublicInput], CliError> {
     if data.len() % 32 != 0 {
         return Err(CliError::CliError(format!(
             "Invalid public inputs length: {:?}",

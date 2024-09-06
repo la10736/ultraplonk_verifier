@@ -122,3 +122,9 @@ pub fn encode_pub_inputs(pub_inputs: &[String], buf: &mut Vec<u8>) -> Result<(),
     }
     Ok(())
 }
+
+pub(crate) fn dump_data_hex<W: Write>(w: &mut W, data: &[u8]) -> Result<(), std::io::Error> {
+    w.write(b"0x")?;
+    w.write_all(hex::encode(data).as_bytes())?;
+    writeln!(w)
+}

@@ -56,9 +56,27 @@ cargo install --features bins --path .
 
 ```bash
 noir-cli key --input ./resources/proves/verifier.sol --output ./target/vk.bin
+
 noir-cli proof-data --input-json ./resources/proves/proof.json --output-proof ./target/proof.bin --output-pubs ./target/pubs.bin
+
 noir-cli verify --key ./target/vk.bin --proof ./target/proof.bin --pubs ./target/pubs.bin
 ```
+
+#### Noir v0.31.0
+Starting from `Noir 0.31.0` the `nargo` toolchain has been slightly modified and the `Barretenberg` backend has been exposed as a separate CLI (`bb`) and used for the process of proof creation and verification; moreover, `bb` also allows to explicitly export the verification key.
+
+To take into account those changes, a new method `proof-datav2` has been added to `noir-cli`. Once you get the `proof` and `vk` files from `nargo` and `bb`, execute the following commands:
+
+```bash
+noir-cli proof-datav2 -n <num_public_inputs> --input-proof <proof_path> --output-proof <out_proof_path> --output-pubs <out_pubs_path>
+
+noir-cli verify --key <vk_path> --proof <proof_path> --pubs <pubs_path>
+```
+
+As you can see, the `noir-cli key` command doesn't need to be executed anymore, as the one generated via `bb write-vk` is already fully compatible.
+Moreover, the `proof-datav2` command has been extended allowing to dump the proof and public inputs file in hexadecimal format.
+A new command `key-to-hex` has been added in order to allow to do the same with the verification key.
+
 
 ## Building
 
