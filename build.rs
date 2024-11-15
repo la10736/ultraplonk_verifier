@@ -166,10 +166,8 @@ fn compile_static_libs(lib_path: &PathBuf, build_info: BuildInfo, components: &[
     components.iter().for_each(|c| {
         cfg.build_target(c);
     });
-    if !cfg!(target_os = "macos") {
-        cfg.define("TARGET_ARCH", "native");
-    }
-
+    cfg.target("x86_64-unknown-linux");
+    cfg.define("TARGET_ARCH", "x86-64");
     // Build using the cmake crate
     cfg.build()
 }
